@@ -26,7 +26,7 @@ public class MyBot : IChessBot
                 return moves[i];
             }
 
-            int weight = TakeWeightCycle(board, board.GetLegalMoves(), 0, false).weight;
+            int weight = TakeWeightCycle(board, board.GetLegalMoves(), 0, false);
             if (moves[i].IsCapture)
             {
                 weight += pieceValues[(int)moves[i].CapturePieceType];
@@ -55,48 +55,51 @@ public class MyBot : IChessBot
         return nextMove;
 
     }
-    int maxDepth = 2;
-    (int weight, int bestMoveIndex) TakeWeightCycle(Board board, Move[] moves, int currentDepth, bool isAITurn)
+    int maxDepth = 4;
+    int[] checkAmount = new int[] { 30, 7, 3, 2};
+    int TakeWeightCycle(Board board, Move[] moves, int currentDepth, bool isAITurn, int checkTopAmount = 30, int previousVal = 0)
     {
-
-        List<int> decreases = new();
+        List<(int weight, int index)> decreases = new();
+        int ind = 0;
         foreach (Move move in moves)
         {
             if (isAITurn && move.IsCapture)
             {
-                decreases.Add(pieceValues[(int)move.CapturePieceType]);
+                decreases.Add((pieceValues[(int)move.CapturePieceType], ind));
                 continue;
             }
             else if (move.IsCapture)
             {
-                decreases.Add(-pieceValues[(int)move.CapturePieceType]);
+                decreases.Add((-pieceValues[(int)move.CapturePieceType], ind));
             }
             else
             {
-                decreases.Add(0);
+                decreases.Add((0, ind));
             }
+            ind++;
         }
+        decreases = decreases.OrderByDescending(x => x.weight).ToList();
         int index = 0;
         if (currentDepth < maxDepth)
         {
-            foreach (Move move in moves)
+            for (int i = 0; i < checkAmount[Math.Clamp(currentDepth, 0, checkAmount.Length)]; i++)
             {
-
-                board.MakeMove(move);
+                if (decreases.Count <= i) break;
+                board.MakeMove(moves[decreases[i].index]);
                 Move[] nextMoves = board.GetLegalMoves();
                 if (nextMoves.Length > 0)
                 {
-                    (int bestWeight, int bestMoveIndex) = TakeWeightCycle(board, nextMoves, currentDepth + 1, !isAITurn);
+                     TakeWeightCycle(board, nextMoves, currentDepth + 1, !isAITurn, checkAmount[Math.Clamp(currentDepth, 0, checkAmount.Length)], decreases[index].weight);
 
                 }
-                board.UndoMove(move);
+                board.UndoMove(moves[decreases[i].index]);
                 index++;
+
+
             }
-
-
         }
-        if (decreases.Count > 0 && isAITurn) return (decreases.Max(), decreases.IndexOf(decreases.Max()));
-        else if (decreases.Count > 0) return (decreases.Min(), decreases.IndexOf(decreases.Max()));
-        else return (0, 0);
+        if (decreases.Count > 0 && isAITurn) return (decreases.Max(x => x.weight));
+        else if (decreases.Count > 0) return (decreases.Min(x => x.weight));
+        else return 0;
     }
 }

@@ -54,101 +54,243 @@ namespace ChessChallenge.Example
         //}
 
 
-        //    int[] pieceValues = { 0, 100, 300, 300, 500, 900, 10000 };
-        //    Random rnd = new();
-        //    public Move Think(Board board, Timer timer)
+        //int[] pieceValues = { 0, 100, 300, 300, 500, 900, 10000 };
+        //Random rnd = new();
+        //public Move Think(Board board, Timer timer)
+        //{
+        //    Move[] moves = board.GetLegalMoves();
+
+        //    Move nextMove = Move.NullMove;
+
+        //    List<Move> sameWeightMoves = new();
+
+        //    (Move move, int weight) bestScore = (Move.NullMove, -99999);
+        //    for (int i = 0; i < moves.Length; i++)
         //    {
-        //        Move[] moves = board.GetLegalMoves();
+        //        board.MakeMove(moves[i]);
 
-        //        Move nextMove = Move.NullMove;
-
-        //        List<Move> sameWeightMoves = new();
-
-        //        (Move move, int weight) bestScore = (Move.NullMove, -99999);
-        //        for (int i = 0; i < moves.Length; i++)
+        //        if (board.IsInCheckmate())
         //        {
-        //            board.MakeMove(moves[i]);
-
-        //            if (board.IsInCheckmate())
-        //            {
-        //                board.UndoMove(moves[i]);
-        //                return moves[i];
-        //            }
-
-        //            int weight = TakeWeightCycle(board, board.GetLegalMoves(), 0, false).weight;
-        //            if (moves[i].IsCapture)
-        //            {
-        //                weight += pieceValues[(int)moves[i].CapturePieceType];
-        //            }
-        //            if (weight > bestScore.weight)
-        //            {
-        //                bestScore = (moves[i], weight);
-        //                sameWeightMoves.Clear();
-        //            }
-        //            else if (weight == bestScore.weight) sameWeightMoves.Add(moves[i]);
-
         //            board.UndoMove(moves[i]);
+        //            return moves[i];
         //        }
-        //        if (sameWeightMoves.Count > 0)
+
+        //        int weight = TakeWeightCycle(board, board.GetLegalMoves(), 0, false).weight;
+        //        if (moves[i].IsCapture)
         //        {
-        //            nextMove = sameWeightMoves[rnd.Next(sameWeightMoves.Count)];
+        //            weight += pieceValues[(int)moves[i].CapturePieceType];
+        //        }
+        //        if (weight > bestScore.weight)
+        //        {
+        //            bestScore = (moves[i], weight);
+        //            sameWeightMoves.Clear();
+        //        }
+        //        else if (weight == bestScore.weight) sameWeightMoves.Add(moves[i]);
+
+        //        board.UndoMove(moves[i]);
+        //    }
+        //    if (sameWeightMoves.Count > 0)
+        //    {
+        //        nextMove = sameWeightMoves[rnd.Next(sameWeightMoves.Count)];
+        //    }
+        //    else
+        //    {
+        //        nextMove = bestScore.move;
+        //    }
+        //    if (nextMove.IsPromotion)
+        //    {
+        //        nextMove = new Move(nextMove.StartSquare.Name + nextMove.TargetSquare.Name + 'q', board);
+        //    }
+        //    return nextMove;
+
+        //}
+        //int maxDepth = 2;
+        //(int weight, int bestMoveIndex) TakeWeightCycle(Board board, Move[] moves, int currentDepth, bool isAITurn)
+        //{
+
+        //    List<int> decreases = new();
+        //    foreach (Move move in moves)
+        //    {
+        //        if (isAITurn && move.IsCapture)
+        //        {
+        //            decreases.Add(pieceValues[(int)move.CapturePieceType]);
+        //            continue;
+        //        }
+        //        else if (move.IsCapture)
+        //        {
+        //            decreases.Add(-pieceValues[(int)move.CapturePieceType]);
         //        }
         //        else
         //        {
-        //            nextMove = bestScore.move;
+        //            decreases.Add(0);
         //        }
-        //        if (nextMove.IsPromotion)
-        //        {
-        //            nextMove = new Move(nextMove.StartSquare.Name + nextMove.TargetSquare.Name + 'q', board);
-        //        }
-        //        return nextMove;
-
         //    }
-        //    int maxDepth = 2;
-        //    (int weight, int bestMoveIndex) TakeWeightCycle(Board board, Move[] moves, int currentDepth, bool isAITurn)
+        //    int index = 0;
+        //    if (currentDepth < maxDepth)
         //    {
-
-        //        List<int> decreases = new();
         //        foreach (Move move in moves)
         //        {
-        //            if (isAITurn && move.IsCapture)
+
+        //            board.MakeMove(move);
+        //            Move[] nextMoves = board.GetLegalMoves();
+        //            if (nextMoves.Length > 0)
         //            {
-        //                decreases.Add(pieceValues[(int)move.CapturePieceType]);
-        //                continue;
+        //                (int bestWeight, int bestMoveIndex) = TakeWeightCycle(board, nextMoves, currentDepth + 1, !isAITurn);
+
         //            }
-        //            else if (move.IsCapture)
+        //            board.UndoMove(move);
+        //            index++;
+        //        }
+
+
+        //    }
+        //    if (decreases.Count > 0 && isAITurn) return (decreases.Max(), decreases.IndexOf(decreases.Max()));
+        //    else if (decreases.Count > 0) return (decreases.Min(), decreases.IndexOf(decreases.Max()));
+        //    else return (0, 0);
+        //}
+
+
+        //int[] pieceValues = { 0, 100, 300, 300, 500, 900, 10000 };
+        //Square[] centralSquares = new Square[] { new("d4"), new("d5"), new("e4"), new("e5") };
+        //Random rnd = new();
+        //public Move Think(Board board, Timer timer)
+        //{
+        //    Move[] moves = board.GetLegalMoves();
+
+        //    Move nextMove = Move.NullMove;
+
+        //    int indexOfMove = 0;
+        //    TakeWeightCycle(board, moves, 0, true, ref indexOfMove);
+        //    //for (int i = 0; i < moves.Length; i++)
+        //    //{
+        //    //    board.MakeMove(moves[i]);
+
+        //    //    if (board.IsInCheckmate())
+        //    //    {
+        //    //        board.UndoMove(moves[i]);
+        //    //        return moves[i];
+        //    //    }
+
+        //    //    int weight = TakeWeightCycle(board, board.GetLegalMoves(), 0, false, ref depthWeights, alpha: bestScore.weight);
+        //    //    if (moves[i].IsCapture)
+        //    //    {
+        //    //        weight += pieceValues[(int)moves[i].CapturePieceType];
+        //    //    }
+        //    //    if (weight > bestScore.weight)
+        //    //    {
+        //    //        bestScore = (moves[i], weight);
+        //    //        sameWeightMoves.Clear();
+        //    //    }
+        //    //    else if (weight == bestScore.weight) sameWeightMoves.Add(moves[i]);
+
+        //    //    board.UndoMove(moves[i]);
+        //    //}
+        //    nextMove = moves[indexOfMove];
+        //    if (nextMove.IsPromotion)
+        //    {
+        //        nextMove = new Move(nextMove.StartSquare.Name + nextMove.TargetSquare.Name + 'q', board);
+        //    }
+        //    return nextMove;
+
+        //}
+        //int maxDepth = 4;
+        //int[] checkAmount = new int[] { 999, 999, 16, 12, 8 };
+        //int TakeWeightCycle(Board board, Move[] moves, int currentDepth, bool isAITurn, ref int moveIndex, int checkTopAmount = 999, int alpha = -99999, int beta = 99999, int currentScore = 0)
+        //{
+        //    List<(int weight, int index)> decreases = new();
+        //    int ind = 0;
+        //    foreach (Move move in moves)
+        //    {
+        //        board.MakeMove(move);
+        //        if (board.IsInCheckmate())
+        //        {
+        //            board.UndoMove(move);
+        //            if (currentDepth == 0) moveIndex = ind;
+        //            return isAITurn ? 10000 : -10000;
+        //        }
+
+        //        if (isAITurn && move.IsCapture)
+        //        {
+        //            decreases.Add((pieceValues[(int)move.CapturePieceType], ind));
+        //        }
+        //        else if (move.IsCapture)
+        //        {
+        //            decreases.Add((-pieceValues[(int)move.CapturePieceType], ind));
+        //        }
+        //        else
+        //        {
+        //            if (centralSquares.Contains(move.TargetSquare)) decreases.Add((isAITurn ? 5 : -5, ind));
+        //            else decreases.Add((0, ind));
+        //        }
+
+        //        board.UndoMove(move);
+        //        ind++;
+        //    }
+        //    if (decreases.Count == 0) return 0;
+        //    decreases = isAITurn ? decreases.OrderByDescending(x => x.weight).ToList() : decreases.OrderByDescending(x => x.weight).ToList();
+        //    if (checkTopAmount < decreases.Count && decreases[checkTopAmount] == decreases[0]) checkTopAmount += 5;
+        //    int index = 0;
+        //    if (currentDepth < maxDepth)
+        //    {
+        //        int currentBest = isAITurn ? -99999 : 99999;
+        //        int weight = isAITurn ? -99999 : 99999;
+        //        int bestIndex = 0;
+        //        List<int> tiedBestEntires = new();
+        //        bool cutoff = false;
+        //        for (int i = 0; i < checkTopAmount; i++)
+        //        {
+        //            if (decreases.Count <= i) break;
+        //            board.MakeMove(moves[decreases[i].index]);
+        //            Move[] nextMoves = board.GetLegalMoves();
+        //            int nextSearchAmount = checkAmount[Math.Clamp(currentDepth + 1, 0, checkAmount.Length - 1)];
+        //            int weight2 = TakeWeightCycle(board, nextMoves, currentDepth + 1, !isAITurn, ref moveIndex, nextSearchAmount, alpha, beta, currentScore + decreases[i].weight);
+        //            if (isAITurn) weight = Math.Max(weight2, weight);
+        //            else weight = Math.Min(weight2, weight);
+
+        //            if (isAITurn && weight > alpha)
         //            {
-        //                decreases.Add(-pieceValues[(int)move.CapturePieceType]);
+        //                currentBest = weight;
+        //                bestIndex = decreases[i].index;
+        //                tiedBestEntires.Clear();
+        //                tiedBestEntires.Add(bestIndex);
+        //                alpha = weight;
+        //            }
+        //            else if (!isAITurn && weight < beta)
+        //            {
+        //                currentBest = weight;
+        //                bestIndex = decreases[i].index;
+        //                tiedBestEntires.Clear();
+        //                tiedBestEntires.Add(bestIndex);
+        //                beta = weight;
+        //            }
+
+        //            if (isAITurn)
+        //            {
+        //                if (weight >= beta && currentDepth != 0) { board.UndoMove(moves[decreases[i].index]); return weight; }
+        //                else if (weight >= beta) { cutoff = true; break; }
         //            }
         //            else
         //            {
-        //                decreases.Add(0);
+        //                if (weight <= alpha && currentDepth != 0) { board.UndoMove(moves[decreases[i].index]); return weight; }
+        //                else if (weight <= alpha) { cutoff = true; break; }
         //            }
+        //            board.UndoMove(moves[decreases[i].index]);
+        //            index++;
+
+
         //        }
-        //        int index = 0;
-        //        if (currentDepth < maxDepth)
+        //        if (currentDepth == 0)
         //        {
-        //            foreach (Move move in moves)
-        //            {
-
-        //                board.MakeMove(move);
-        //                Move[] nextMoves = board.GetLegalMoves();
-        //                if (nextMoves.Length > 0)
-        //                {
-        //                    (int bestWeight, int bestMoveIndex) = TakeWeightCycle(board, nextMoves, currentDepth + 1, !isAITurn);
-
-        //                }
-        //                board.UndoMove(move);
-        //                index++;
-        //            }
-
-
+        //            moveIndex = tiedBestEntires[rnd.Next(tiedBestEntires.Count)];
         //        }
-        //        if (decreases.Count > 0 && isAITurn) return (decreases.Max(), decreases.IndexOf(decreases.Max()));
-        //        else if (decreases.Count > 0) return (decreases.Min(), decreases.IndexOf(decreases.Max()));
-        //        else return (0, 0);
+        //        return weight;
+        //    }
+        //    else
+        //    {
+        //        return currentScore + decreases[0].weight;
         //    }
 
+        //}
 
         int[] pieceValues = { 0, 100, 300, 300, 500, 900, 10000 };
         Square[] centralSquares = new Square[] { new("d4"), new("d5"), new("e4"), new("e5") };
@@ -193,15 +335,26 @@ namespace ChessChallenge.Example
             return nextMove;
 
         }
-        int maxDepth = 4;
-        int[] checkAmount = new int[] { 999, 999, 16, 12, 8 };
+        int maxDepth = 5;
+        //int[] checkAmount = new int[] { 999, 999, 25, 18, 12 };
+        int[] checkAmount = new int[] { 999, 999, 20, 35, 9, 15, 3 };
         int TakeWeightCycle(Board board, Move[] moves, int currentDepth, bool isAITurn, ref int moveIndex, int checkTopAmount = 999, int alpha = -99999, int beta = 99999, int currentScore = 0)
         {
             List<(int weight, int index)> decreases = new();
             int ind = 0;
             foreach (Move move in moves)
             {
+                int totalScore = 0;
                 board.MakeMove(move);
+                if (board.GameRepetitionHistory.Length >= 4)
+                {
+                    int repeatCount = 0;
+                    for (int i = 0; i < board.GameRepetitionHistory.Length; i++)
+                    {
+                        if (board.ZobristKey == board.GameRepetitionHistory[i]) repeatCount++;
+                    }
+                    if (repeatCount > 1) totalScore -= 25;
+                }
                 if (board.IsInCheckmate())
                 {
                     board.UndoMove(move);
@@ -211,23 +364,23 @@ namespace ChessChallenge.Example
 
                 if (isAITurn && move.IsCapture)
                 {
-                    decreases.Add((pieceValues[(int)move.CapturePieceType], ind));
+                    totalScore += pieceValues[(int)move.CapturePieceType];
                 }
                 else if (move.IsCapture)
                 {
-                    decreases.Add((-pieceValues[(int)move.CapturePieceType], ind));
+                    totalScore += -pieceValues[(int)move.CapturePieceType];
                 }
                 else
                 {
-                    if (centralSquares.Contains(move.TargetSquare)) decreases.Add((isAITurn ? 5 : -5, ind));
-                    else decreases.Add((0, ind));
+                    if (centralSquares.Contains(move.TargetSquare)) totalScore += isAITurn ? 5 : -5;
                 }
+                decreases.Add((totalScore, ind));
 
                 board.UndoMove(move);
                 ind++;
             }
             if (decreases.Count == 0) return 0;
-            decreases = isAITurn ? decreases.OrderByDescending(x => x.weight).ToList() : decreases.OrderByDescending(x => x.weight).ToList();
+            decreases = isAITurn ? decreases.OrderByDescending(x => x.weight).ToList() : decreases.OrderBy(x => x.weight).ToList();
             if (checkTopAmount < decreases.Count && decreases[checkTopAmount] == decreases[0]) checkTopAmount += 5;
             int index = 0;
             if (currentDepth < maxDepth)
